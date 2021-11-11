@@ -1,4 +1,3 @@
-
 # Create a resource group if it doesn't exist
 resource "azurerm_resource_group" "myterraformgroup" {
     name     = "myResourceGroup"
@@ -160,12 +159,12 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
     }
 	    
 	connection {
-        host = "${azurerm_public_ip.myterraformpublicip.fqdn}"
+        host = self.public_ip_address
         user = "azureuser"
         type = "ssh"
         private_key = "${file("~/.ssh/id_rsa")}"
         timeout = "4m"
-        agent = true
+        agent = false
     }
 	
 	provisioner "file" {
@@ -178,11 +177,11 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
           "sudo apt-get update",
           "sudo apt-get install docker.io -y",
           "git clone https://github.com/devopsschool-training-notes/terraform-ey-june-2021",
-          "sudo docker run -d -p 80:80 jenkins/httpd"
+          "sudo docker run -d -p 80:80 httpd"
         ]
     }
 	
 	provisioner "local-exec" {
-    command = "E:\terraform\azure4\deploy.bat"
+    command = "deploy.bat"
 	}
 }
